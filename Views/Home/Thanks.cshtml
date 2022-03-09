@@ -1,0 +1,29 @@
+﻿@model KutseeApp_Grigorjev.Models.Guest
+
+@{
+    ViewBag.Title = "Thanks ";
+}
+
+<div>
+    <p> Tänan sind ,@Model.Name</p>
+</div>
+
+<div>
+    @if (Model.WillAttend == true)
+    {
+        @:Ootan siin väga!!
+        <p>
+            <img src="~/Images/kutse2.png"/>
+        </p>
+    }
+    else
+    {
+        @:Nu minne ära !
+        <p>
+            <img src="~/Images/kutse3.jpg" />
+        </p>
+    }
+    @ViewBag.Message
+</div>
+<h2>Thanks</h2>
+
