@@ -10,6 +10,7 @@ namespace KutseeApp_Grigorjev.Models
     public class ApplicationUser : IdentityUser
     {
         public string Email { get; set; }
+        public object PhoneNumber { get; internal set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
