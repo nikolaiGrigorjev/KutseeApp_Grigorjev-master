@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Helpers;
@@ -14,6 +13,7 @@ namespace KutseeApp_Grigorjev.Controllers
     {
         public ActionResult Index()
         {
+            
             string pidu = "";
             if (DateTime.Now.Month == 1) { pidu = "Jaanuari pidu"; }
             else if (DateTime.Now.Month == 2) { pidu = "Baarmeni päev pidu"; }
@@ -43,20 +43,22 @@ namespace KutseeApp_Grigorjev.Controllers
 
             return View();
         }
+        public static string email;
+
         [HttpGet]
         public ViewResult Ankeet()
         {
             return View();
         }
+
         [HttpPost]
         public ViewResult Ankeet(Guest guest)
         {
             E_mail(guest);
             if (ModelState.IsValid)
             {
-                db.Guests.Add(guest);
+                db.Guest.Add(guest);
                 db.SaveChanges();
-                ViewBag.Greeting = guest.Email;
                 return View("Thanks", guest);
             }
             else
@@ -64,56 +66,7 @@ namespace KutseeApp_Grigorjev.Controllers
                 return View();
             }
         }
-        [HttpGet]
-        public ActionResult Create()
-        {
-            return View();
-        }
-        public ActionResult Create(Guest guest)
-        {
-            db.Guests.Add(guest);
-            db.SaveChanges();
-            return RedirectToAction("Guest");
-        }
-        [HttpGet]
-        public ActionResult Delete(int id)
-        {
-            Guest g = db.Guests.Find(id);
-            if (g == null)
-            {
-                return HttpNotFound();
-            }
-            return View(g);
-        }
-        [HttpPost, ActionName("Delete")]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Guest g = db.Guests.Find(id);
-            if (g == null)
-            {
-                return HttpNotFound();
-            }
-            db.Guests.Remove(g);
-            db.SaveChanges();
-            return RedirectToAction("Guest");
-        }
-        [HttpGet]
-        public ActionResult Edit(int? id)
-        {
-            Guest g = db.Guests.Find(id);
-            if (g == null)
-            {
-                return HttpNotFound();
-            }
-            return View(g);
-        }
-        [HttpPost, ActionName("Edit")]
-        public ActionResult EditConfirmed(Guest guest)
-        {
-            db.Entry(guest).State = EntityState.Modified;
-            db.SaveChanges();
-            return RedirectToAction("Guest");
-        }
+
         public void E_mail(Guest guest)
         {
             try
@@ -126,7 +79,7 @@ namespace KutseeApp_Grigorjev.Controllers
                 WebMail.From = "programmeeriminetthk2@gmail.com";
                 WebMail.Send(guest.Email, "Vastus kutsele ", guest.Name + " vastas" + ((guest.WillAttend ?? false) ? " tuleb peole: " : " ei tule peole "));
                 WebMail.Send(guest.Email, "Meeldetuletus", guest.Name + ", ara unusta. Pidu toimub 12.03.22! Sind ootavad väga!",
-                    null, "aleksei.tiora@gmail.com");
+                    null, "nikolai.grigorjev01@gmail.com");
                 ViewBag.Message = "Kiri on saatnud";
 
             }
@@ -150,11 +103,61 @@ namespace KutseeApp_Grigorjev.Controllers
         }
 
         GuestContext db = new GuestContext();
-        [Authorize] //-Данное представление Guests сможет увидить только авторозированный пользователь
-        public ActionResult Guest()
+        //[Authorize]
+        public ActionResult Guests()
         {
-            IEnumerable<Guest> guests = db.Guests;
+            IEnumerable<Guest> guests = db.Guest;
             return View(guests);
+        }
+        [HttpGet]
+        public ActionResult Create()
+        {
+            return View();
+        }
+        public ActionResult Create(Guest guest)
+        {
+            db.Guest.Add(guest);
+            db.SaveChanges();
+            return RedirectToAction("Guests");
+        }
+        [HttpGet]
+        public ActionResult Delete(int id)
+        {
+            Guest g = db.Guest.Find(id);
+            if (g == null)
+            {
+                return HttpNotFound();
+            }
+            return View(g);
+        }
+        [HttpPost, ActionName("Delete")]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Guest g = db.Guest.Find(id);
+            if (g == null)
+            {
+                return HttpNotFound();
+            }
+            db.Guest.Remove(g);
+            db.SaveChanges();
+            return RedirectToAction("Guests");
+        }
+        [HttpGet]
+        public ActionResult Edit(int? id)
+        {
+            Guest g = db.Guest.Find(id);
+            if (g == null)
+            {
+                return HttpNotFound();
+            }
+            return View(g);
+        }
+        [HttpPost, ActionName("Edit")]
+        public ActionResult EditConfirmed(Guest guest)
+        {
+            db.Entry(guest).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("Guests");
         }
     }
 }
